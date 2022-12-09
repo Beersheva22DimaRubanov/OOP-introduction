@@ -9,32 +9,32 @@ public class SquareTriangle extends Square {
 	}
 
 	public String[] presentation(int offset) {
-		String[] res = new String[super.getWidth()];
-		res[0] = getFirstLine(offset, isLeftDiagonal);
+		String[] res = new String[getWidth()];
+		res[0] = getApex(offset, isLeftDiagonal);
 		for (int i = 1; i < res.length - 1; i++) {
-			res[i] = getMiddleLine(offset, i, isLeftDiagonal);
+			res[i] = getHypotenuse(offset, i, isLeftDiagonal);
 		}
 		res[res.length - 1] = getLine(offset);
 		return res;
 	}
 
-	private String getFirstLine(int offset, boolean isLeftDiagonal2) {
+	private String getApex(int offset, boolean isLeftDiagonal2) {
 		String res;
 		if (isLeftDiagonal) {
-			res = getOffset(offset) + super.getSymbol();
+			res = getOffset(offset) + getSymbol();
 		} else {
-			res = getOffset(offset + super.getWidth() - 1) + super.getSymbol();
+			res = getOffset(offset + getWidth() - 1) + getSymbol();
 		}
 		return res;
 	}
 
-	private String getMiddleLine(int offset, int index, boolean isLeftDiagonal) {
+	private String getHypotenuse(int offset, int index, boolean isLeftDiagonal) {
 		String res;
 		if (isLeftDiagonal) {
-			res = getOffset(offset) + super.getSymbol() + getOffset(index - 1) + super.getSymbol();
+			res = getOffset(offset) + getSymbol() + getOffset(index - 1) + getSymbol();
 		} else {
-			res = getOffset(offset + super.getWidth() - index - 1) + super.getSymbol() + getOffset(index - 1)
-					+ super.getSymbol();
+			res = getOffset(offset + getWidth() - index - 1) + getSymbol() + getOffset(index - 1)
+					+ getSymbol();
 		}
 		return res;
 	}
