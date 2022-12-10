@@ -2,8 +2,11 @@ package telran.shapes.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Base64;
+
 import org.junit.jupiter.api.Test;
 
+import telran.cipher.BaseCipher;
 import telran.shapes.Rectangle;
 import telran.shapes.Square;
 import telran.shapes.SquareLeftTriangle;
@@ -27,6 +30,7 @@ public class ShapesTest {
 		
 		SquareRiqhtTriangle rightTriangle = new SquareRiqhtTriangle(10, false);
 		displayStrings(rightTriangle.presentation(10));
+		
 	}
 	
 	private void displayStrings(String[] strings) {
