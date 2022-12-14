@@ -7,7 +7,9 @@ import java.util.Base64;
 import org.junit.jupiter.api.Test;
 
 import telran.cipher.BaseCipher;
+import telran.shapes.Canvas;
 import telran.shapes.Rectangle;
+import telran.shapes.Shape;
 import telran.shapes.Square;
 import telran.shapes.SquareLeftTriangle;
 import telran.shapes.SquareRiqhtTriangle;
@@ -25,11 +27,16 @@ public class ShapesTest {
 		square.setHeight(5);
 		displayStrings(square.presentation(20));
 		
-		SquareLeftTriangle leftTriangle = new SquareLeftTriangle(10, true);
+		SquareLeftTriangle leftTriangle = new SquareLeftTriangle(7, true);
 		displayStrings(leftTriangle.presentation(20));
 		
 		SquareRiqhtTriangle rightTriangle = new SquareRiqhtTriangle(10, false);
 		displayStrings(rightTriangle.presentation(10));
+		
+		Shape[] shapes = {leftTriangle, leftTriangle, square, rectangle};
+		Canvas canvas = new Canvas(5, 4, shapes);
+//		canvas.setDirection("column");
+		displayStrings(canvas.presentation(5));
 		
 	}
 	
