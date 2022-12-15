@@ -35,8 +35,10 @@ public class ShapesTest {
 		
 		Shape[] shapes = {leftTriangle, leftTriangle, square, rectangle};
 		Canvas canvas = new Canvas(5, 4, shapes);
-//		canvas.setDirection("column");
-		displayStrings(canvas.presentation(5));
+		displayStrings(canvas.presentation(6));
+
+		canvas.setDirection("column");
+		displayStrings(canvas.presentation(6));
 		
 	}
 	
