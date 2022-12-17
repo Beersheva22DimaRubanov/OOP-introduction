@@ -35,10 +35,13 @@ public class ShapesTest {
 		
 		Shape[] shapes = {leftTriangle, leftTriangle, square, rectangle};
 		Canvas canvas = new Canvas(5, 4, shapes);
-		displayStrings(canvas.presentation(6));
-
 		canvas.setDirection("column");
-		displayStrings(canvas.presentation(6));
+//		displayStrings(canvas.presentation(4));
+		
+		Shape [] shapes2 = {leftTriangle, leftTriangle, square, rectangle, canvas};
+		Canvas canvas2 = new Canvas(8,4, shapes2);
+//		canvas2.setDirection("column");
+		displayStrings(canvas2.presentation(4));
 		
 	}
 	

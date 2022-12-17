@@ -26,6 +26,14 @@ public class Canvas extends Shape {
 		this.margin = offset;
 	}
 
+	public int getHeight() {
+		int res = 0;
+		for (int i = 0; i < shapes.length; i++) {
+			res += shapes[i].getHeight();
+		}
+		return res + (getMargin() * (shapes.length - 1));
+	}
+
 	@Override
 	public String[] presentation(int offset) {
 		switch (getDirection()) {
@@ -44,6 +52,9 @@ public class Canvas extends Shape {
 		String[] res = new String[height];
 		int currentHeigth = 0;
 		for (int i = 0; i < shapes.length; i++) {
+			if (shapes[i] instanceof Canvas) {
+				((Canvas) shapes[i]).setDirection("column");
+			}
 			String[] helper = shapes[i].presentation(2);
 			System.arraycopy(helper, 0, res, currentHeigth, helper.length);
 			arrayCopy(res, helper, currentHeigth);
@@ -57,12 +68,15 @@ public class Canvas extends Shape {
 	}
 
 	private String[] getRowArray(int offset) {
-		setHeight(5);
-		int height = getHeight();
+		
+		int height = shapes[0].getHeight();
 		String[] res = new String[height];
 		shapes[0].setHeight(height);
-		res = shapes[0].presentation(0);
+		res = shapes[0].presentation(offset);
 		for (int i = 1; i < shapes.length; i++) {
+			if (shapes[i] instanceof Canvas) {
+				((Canvas) shapes[i]).setDirection(direction);
+			}
 			shapes[i].setHeight(height);
 			res = joinArrays(res, shapes[i].presentation(margin));
 		}
