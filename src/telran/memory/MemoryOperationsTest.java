@@ -13,6 +13,7 @@ public class MemoryOperationsTest {
 		ar = new byte[maxMemory];
 		ar = null;
 		boolean filException = false;
+		
 		try {
 			ar = new byte[maxMemory + 1];
 		} catch(Throwable e) {
