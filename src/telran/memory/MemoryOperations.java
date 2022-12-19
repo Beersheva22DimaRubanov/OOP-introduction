@@ -5,33 +5,22 @@ import java.util.Arrays;
 public class MemoryOperations {
 	public static int getMaxAvailableMemory() {
 		int res = Integer.MAX_VALUE;
-		boolean running = true;
-		boolean flag = true;
 		byte ar[] = null;
-		int right = Integer.MAX_VALUE;
-		int left = 0;
-		int middle = (right + left) / 2;
-		while (right>=left && running) {
+		int maxMemory = Integer.MAX_VALUE;
+		int minMemory = 0;
+		int middle = (maxMemory + minMemory) / 2;
+		int maxAvaliable = 0;
+		while (maxMemory >= minMemory) {
 			ar = null;
 			try {
 				ar = new byte[middle];
-				flag = false;
+				maxAvaliable = middle;
+				minMemory = middle + 1;
 			} catch (Throwable e) {
-				right = middle - 1;
+				maxMemory = middle - 1;
 			}
-			ar = null;
-			if (!flag) {
-				try {
-					ar = new byte[middle + 1];
-					left = middle + 1;
-					flag = true;
-				} catch (Throwable f) {
-					res = middle;
-					running = false;
-				}
-			}
-			middle = (left + right) / 2;
+			middle = minMemory + (maxMemory - minMemory) / 2;
 		}
-		return res;
+		return maxAvaliable;
 	}
 }
