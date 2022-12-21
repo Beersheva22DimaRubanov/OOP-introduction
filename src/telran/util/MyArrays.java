@@ -9,6 +9,22 @@ public class MyArrays {
 			length--;
 		} while(moveMaxAtEnd(objects, length, comparator));
 	}
+	
+	static public < T> int binarySearch(T[] array, Integer searchedNumber, Comparator <T> comp) {
+		int right = array.length -1;
+		int left = 0;
+		int middle = array.length/2;
+		while(right>=left && comp.compare((T) searchedNumber, array[left]) != 0) {
+			if(comp.compare((T)searchedNumber, array[middle]) <= 0) {
+				right = middle-1;
+			} else {
+				left = middle+1;
+			}
+			middle = (right + left)/2;
+		}
+		return  left < array.length && 
+				comp.compare((T)searchedNumber, array[left])==0 ? left : -left - 1;
+	}
 
 	private static<T> boolean moveMaxAtEnd(T[] objects, int length, Comparator<T> comp) {
 		boolean res = false;
