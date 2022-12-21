@@ -16,7 +16,7 @@ public class MyArraysTest {
 		String[] strings = { "abcd", "lmn", "zz" };
 		String[] expected = { "zz", "lmn", "abcd" };
 		Integer[] ar = { 3, 2, 1 };
-
+		
 		MyArrays.sort(strings, new StringLengthComparator());
 		assertArrayEquals(expected, strings);
 		MyArrays.sort(ar, (a, b) -> a - b);
