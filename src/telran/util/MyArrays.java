@@ -16,7 +16,7 @@ public class MyArrays {
 		int right = array.length - 1;
 		int left = 0;
 		int middle = array.length / 2;
-		while (right >= left && comp.compare(key, array[left]) != 0) {
+		while (right >= left && comp.compare(key, array[middle]) != 0) {
 			if (comp.compare(key, array[middle]) <= 0) {
 				right = middle - 1;
 			} else {
@@ -24,7 +24,7 @@ public class MyArrays {
 			}
 			middle = (right + left) / 2;
 		}
-		return left < array.length && comp.compare(key, array[left]) == 0 ? left : -left - 1;
+		return left < array.length && comp.compare(key, array[middle]) == 0 ? middle : -left - 1;
 	}
 
 	private static <T> boolean moveMaxAtEnd(T[] objects, int length, Comparator<T> comp) {
