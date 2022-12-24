@@ -6,20 +6,10 @@ public class EvenOddComparator implements Comparator<Integer> {
 
 	@Override
 	public int compare(Integer o1, Integer o2) {
-		int res=0;
-		if(isOdd(o1) && isOdd(o2)) {
-			res = o1-o2;
-		}else if(!isOdd(o1)&& isOdd(o2)) {
-			res = 1;
-		} else if(!isOdd(o1) && !isOdd(o2)) {
-			res = o2-o1;
-		} 
-			return res;
+		int res = Math.abs(o1) % 2 - Math.abs(o2) % 2;
+		if (res == 0) {
+			res = o1 % 2 != 0 ? Integer.compare(o2, o1) : o1 - o2;
+		}
+		return res;
 	}
-	
-	
-	private boolean isOdd(int number) {
-		return number%2==0?true:false;
-	}
-
 }
