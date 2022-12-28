@@ -71,24 +71,38 @@ public class MyArrays {
 	}
 
 	public static <T> T[] removeRepeated(T[] array) {
-		for (int i = 0; i < array.length - 1; i++) {
-			for (int j = i + 1; j < array.length; j++) {
-				if (array[i] == array[j]) {
-					array[j] = null;
-				}
+		final Object helper[] = new Object[array.length];
+		final int index[] = {0};
+		return removeIf(array, element -> {
+			boolean res = true;
+			if (!contains(helper, element)) {
+				helper[index[0]++] = element;
+				res = false;
 			}
-		}
-		return contains(array, null) ? removeIf(array, a -> a == null) : array;
+			return res;
+		});
 	}
 
 	public static <T> boolean contains(T[] array, T pattern) {
-		boolean res = false;
 		int index = 0;
-		while (!res && index < array.length) {
-			if (array[index] == pattern) {
-				res = true;
-			}
+		while ( index < array.length && !isEqual(array[index], pattern)) {
 			index++;
+		}
+		return index < array.length;
+	}
+
+	private static boolean isEqual(Object element, Object pattern) {
+		return element == null? element == pattern : element.equals(pattern);
+	}
+	
+	public static <T> String join(T[] array, String delimiter) {
+		String res = "";
+		if(array.length > 0){
+			StringBuilder builder = new StringBuilder(array[0].toString());
+			for (int i = 1; i < array.length; i++) {
+				builder.append(delimiter).append(array[i]);
+			}
+			res = builder.toString();
 		}
 		return res;
 	}

@@ -17,6 +17,8 @@ import telran.util.MyArrays;
 
 public class MyArraysTest {
 	Integer numbers[] = { 13, 2, -8, 47, 100, 10, 7, -7 };
+	static final int N_RUNS = 1000;
+	static final int N_NUMBERS = 10000;
 	String strings[] = { "ab", "abm", "abmb", "abmbc"}; 
 	Comparator<Integer> evenOddComparator = this::evenOddCompare;
 
@@ -42,7 +44,7 @@ public class MyArraysTest {
 	}
 
 	@Test
-//	@Disabled
+	@Disabled
 	void binarySearchTest() {
 		Integer sorted[] = { 0, 1, 3, 4, 5, 6, 7, 8, 9, 23 };
 		int index = MyArrays.binarySearch(sorted, 3, new IntBinarySearchComparator());
@@ -56,6 +58,7 @@ public class MyArraysTest {
 	}
 
 	@Test
+	@Disabled
 	void filterTest() {
 		int dividor = 2;
 		String subStr = "m";
@@ -68,6 +71,7 @@ public class MyArraysTest {
 	}
 	
 	@Test
+	@Disabled
 	void removeIfTest() {
 		String stringsArray[] = { "ab", "abm", "abmb", "abmbc", null }; 
 		String subStr = "m";
@@ -78,12 +82,33 @@ public class MyArraysTest {
 	}
 	
 	@Test
+	@Disabled
 	void removePepeatedTest() {
 		Integer SortNumbers[] = { 13, 2, -8, 7, 13, 13, 7, 47, 100, 10, 7, -7, 10 };
 		Integer[] expected = { 13, 2, -8, 7, 47, 100, 10, -7 };
  		assertArrayEquals(expected, MyArrays.removeRepeated(SortNumbers));
 	}
 	
+	@Test
+	void joinFunctionalTest() {
+		String expected = "13,2,-8,47,100,10,7,-7";
+		assertEquals(expected, MyArrays.join(numbers, ","));
+	}
+	
+	@Test
+	void joinPerfomanceTest() {
+		Integer largeArray[] = getLargeNumbersArray();
+		for(int i = 0; i< N_RUNS; i++) {
+			MyArrays.join(largeArray, ",");
+		}
+	}
+	
+	private Integer[] getLargeNumbersArray() {
+		Integer[] res = new Integer[N_NUMBERS];
+		Arrays.fill(res, 1000);
+		return res;
+	}
+
 	int evenOddCompare(Integer o1, Integer o2) {
 		int res = Math.abs(o1) % 2 - Math.abs(o2) % 2;
 		if (res == 0) {
