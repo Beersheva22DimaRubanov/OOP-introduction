@@ -13,6 +13,8 @@ import java.util.function.Predicate;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import telran.util.ArrayList;
+import telran.util.List;
 import telran.util.MyArrays;
 
 public class MyArraysTest {
@@ -90,17 +92,48 @@ public class MyArraysTest {
 	}
 	
 	@Test
+	@Disabled
 	void joinFunctionalTest() {
 		String expected = "13,2,-8,47,100,10,7,-7";
 		assertEquals(expected, MyArrays.join(numbers, ","));
 	}
 	
 	@Test
+	@Disabled
 	void joinPerfomanceTest() {
 		Integer largeArray[] = getLargeNumbersArray();
 		for(int i = 0; i< N_RUNS; i++) {
 			MyArrays.join(largeArray, ",");
 		}
+	}
+	
+	@Test
+	void arrayListTest() {
+		ArrayList<Integer> list = new ArrayList<>();
+		list.add(23);
+		list.add(13);
+		list.set(0, 10);
+		list.add(1,14);
+		assertEquals(3, list.size());
+		assertEquals(13, list.get(2));
+		assertEquals(10, list.get(0));
+		assertEquals(14, list.get(1));
+		list.add(15);
+		list.add(17);
+		list.add(12);
+		list.add(113);
+		list.add(19);
+
+		assertEquals(8, list.size());
+		list.remove(2);
+		assertEquals(15, list.get(2));
+		list.removeIf(s -> s %2 == 0);
+		assertEquals(4, list.size());
+		assertEquals(15, list.get(0));
+		assertTrue(list.contains(19));
+		assertFalse(list.contains(123456));
+		
+		
 	}
 	
 	private Integer[] getLargeNumbersArray() {

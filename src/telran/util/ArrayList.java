@@ -7,7 +7,6 @@ public class ArrayList<T> implements List<T> {
 	static final int DEFAULT_CAPACITY = 16;
 	private T[] array;
 	private int size;
-	java.util.ArrayList<String> arr = new java.util.ArrayList<String>();
 
 	public ArrayList(int capacity) {
 		array = (T[]) new Object[capacity];
@@ -32,14 +31,32 @@ public class ArrayList<T> implements List<T> {
 
 	@Override
 	public boolean remove(T pattern) {
-		// TODO Auto-generated method stub
+		int index = 0;
+		while (index < size && !array[index].equals(pattern)) {
+			if (array[index].equals(pattern)) {
+				removeElement(index);
+			}
+			index++;
+		}
 		return false;
+	}
+
+	private void removeElement(int index) {
+		if (size - 1 > index) {
+			System.arraycopy(array, index+1, array, index, (size - 1 - index));
+		}
+		size--;
 	}
 
 	@Override
 	public boolean removeIf(Predicate<T> predicate) {
-		// TODO Auto-generated method stub
-		return false;
+		for(int i = 0; i<size; i++) {
+			if(predicate.test(array[i])) {
+				removeElement(i);
+				i--;
+			}
+		}
+		return true;
 	}
 
 	@Override
@@ -62,26 +79,50 @@ public class ArrayList<T> implements List<T> {
 
 	@Override
 	public boolean contains(T pattern) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean res = false;
+		int index = 0;
+		while(index < size && !res) {
+			if(array[index].equals(pattern)) {
+				res = true;
+			}
+			index++;
+		}
+		return res;
 	}
 
 	@Override
-	public T[] toArray(T[] array) {
-		// TODO Auto-generated method stub
-		return null;
+	public T[] toArray(T[] ar) {
+		if(ar.length < size) {
+			ar = Arrays.copyOf(ar, size);
+		} 
+		System.arraycopy(array, 0, ar, 0, size);
+
+		if(ar.length > size) {
+			for(int i = size; i < ar.length; i ++) {
+					ar[i] = null;
+			}
+		}
+		return ar;
 	}
 
 	@Override
 	public void add(int index, T element) {
-		// TODO Auto-generated method stub
-
+		if (size == array.length) {
+			reallocate();
+		}
+		System.arraycopy(array, index, array, index+1, size - index);
+		array[index] = element;
+		size++;
 	}
 
 	@Override
 	public T remove(int index) {
-		// TODO Auto-generated method stub
-		return null;
+		T old = null;
+		if (index < size) {
+			old = array[index];
+			removeElement(index);
+		}
+		return old;
 	}
 
 	@Override
@@ -103,8 +144,8 @@ public class ArrayList<T> implements List<T> {
 	@Override
 	public int lastIndexOf(T pattern) {
 		int res = -1;
-		for(int i =0; i<array.length; i++) {
-			if(isEquals(array[i], pattern)){
+		for (int i = 0; i < array.length; i++) {
+			if (isEquals(array[i], pattern)) {
 				res = i;
 			}
 		}
@@ -113,18 +154,18 @@ public class ArrayList<T> implements List<T> {
 
 	@Override
 	public T get(int index) {
-		return isInSize(index)? array[index]:(T)new IndexOutOfBoundsException();
+		return isInSize(index) ? array[index] : (T) new IndexOutOfBoundsException();
 	}
 
 	@Override
 	public void set(int index, T element) {
-		if(isInSize(index)) {
+		if (isInSize(index)) {
 			array[index] = element;
 		}
 	}
 
 	private boolean isInSize(int index) {
-		return  index<= size && index>0;
+		return index <= size && index >= 0;
 	}
 
 }
