@@ -1,12 +1,29 @@
 package telran.util;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.function.Predicate;
 
 public class ArrayList<T> implements List<T> {
 	static final int DEFAULT_CAPACITY = 16;
 	private T[] array;
 	private int size;
+	private class ArrayListIterator implements Iterator<T>{
+
+		@Override
+		public boolean hasNext() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public T next() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		
+	}
 
 	public ArrayList(int capacity) {
 		array = (T[]) new Object[capacity];
@@ -31,45 +48,39 @@ public class ArrayList<T> implements List<T> {
 
 	@Override
 	public boolean remove(T pattern) {
-		int index = 0;
-		while (index < size && !array[index].equals(pattern)) {
-			if (array[index].equals(pattern)) {
-				removeElement(index);
-			}
-			index++;
+		boolean res = false;
+		int index = indexOf(pattern);
+		if (index > -1) {
+			res = true;
+			remove(index);
 		}
-		return false;
+		return res;
 	}
 
 	private void removeElement(int index) {
 		if (size - 1 > index) {
-			System.arraycopy(array, index+1, array, index, (size - 1 - index));
+			System.arraycopy(array, index + 1, array, index, (size - 1 - index));
 		}
 		size--;
 	}
 
 	@Override
 	public boolean removeIf(Predicate<T> predicate) {
-		for(int i = 0; i<size; i++) {
-			if(predicate.test(array[i])) {
+		//FIXME - write implementation of O[N]. Hint working with only indexes
+		int oldSize = size;
+		for (int i = 0; i < size; i++) {
+			if (predicate.test(array[i])) {
 				removeElement(i);
 				i--;
 			}
 		}
-		return true;
+		return oldSize > size;
 	}
 
 	@Override
 	public boolean isEmpty() {
-		int index = 0;
-		boolean res = true;
-		while (index < array.length && !res) {
-			if (array[index] != null) {
-				res = false;
-			}
-			index++;
-		}
-		return res;
+	
+		return size == 0;
 	}
 
 	@Override
@@ -81,8 +92,8 @@ public class ArrayList<T> implements List<T> {
 	public boolean contains(T pattern) {
 		boolean res = false;
 		int index = 0;
-		while(index < size && !res) {
-			if(array[index].equals(pattern)) {
+		while (index < size && !res) {
+			if (array[index].equals(pattern)) {
 				res = true;
 			}
 			index++;
@@ -92,14 +103,14 @@ public class ArrayList<T> implements List<T> {
 
 	@Override
 	public T[] toArray(T[] ar) {
-		if(ar.length < size) {
+		if (ar.length < size) {
 			ar = Arrays.copyOf(ar, size);
-		} 
+		}
 		System.arraycopy(array, 0, ar, 0, size);
 
-		if(ar.length > size) {
-			for(int i = size; i < ar.length; i ++) {
-					ar[i] = null;
+		if (ar.length > size) {
+			for (int i = size; i < ar.length; i++) {
+				ar[i] = null;
 			}
 		}
 		return ar;
@@ -110,31 +121,26 @@ public class ArrayList<T> implements List<T> {
 		if (size == array.length) {
 			reallocate();
 		}
-		System.arraycopy(array, index, array, index+1, size - index);
+		System.arraycopy(array, index, array, index + 1, size - index);
 		array[index] = element;
 		size++;
 	}
 
 	@Override
 	public T remove(int index) {
-		T old = null;
-		if (index < size) {
-			old = array[index];
-			removeElement(index);
-		}
+		T old = array[index];
+		removeElement(index);
+		array[size] = null;
 		return old;
 	}
 
 	@Override
 	public int indexOf(T pattern) {
-		int res = -1;
 		int index = 0;
-		while (index < array.length && res < 0) {
-			if (isEquals(array[index], pattern)) {
-				res = index;
-			}
+		while (index < size && !isEquals(array[index], pattern)) {
+			index++;
 		}
-		return res;
+		return index < size ? index : -1;
 	}
 
 	private boolean isEquals(T element, T pattern) {
@@ -144,7 +150,7 @@ public class ArrayList<T> implements List<T> {
 	@Override
 	public int lastIndexOf(T pattern) {
 		int res = -1;
-		for (int i = 0; i < array.length; i++) {
+		for (int i = 0; i < size; i++) {
 			if (isEquals(array[i], pattern)) {
 				res = i;
 			}
@@ -166,6 +172,11 @@ public class ArrayList<T> implements List<T> {
 
 	private boolean isInSize(int index) {
 		return index <= size && index >= 0;
+	}
+
+	@Override
+	public Iterator<T> iterator() {
+		return new ArrayListIterator();
 	}
 
 }
