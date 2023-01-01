@@ -68,7 +68,6 @@ public abstract class CollectionTest {
 
 	@Test
 	void testToArray() {
-		
 		Arrays.fill(ar, 10);
 		collection.toArray(ar);
 		for(int i = 0; i < numbers.length; i++) {
@@ -77,6 +76,5 @@ public abstract class CollectionTest {
 		for(int i = numbers.length; i < ar.length; i++) {
 			assertNull(ar[i]);
 		}
-		
 	}
 }

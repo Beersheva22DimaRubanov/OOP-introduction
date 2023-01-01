@@ -1,6 +1,7 @@
 package telran.util.test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Iterator;
 
@@ -13,12 +14,13 @@ public class RangeIteratorTest {
 
 	@Test
 	void test() {
-		Range range = new Range (1,6);
+		Range range = new Range(1, 6);
 		ArrayList<Integer> list = new ArrayList<>();
 		Iterator<Integer> it = range.iterator();
-		while(it.hasNext()) {
+		while (it.hasNext()) {
 			list.add(it.next());
 		}
 		assertArrayEquals(numbers, list.toArray(new Integer[0]));
 	}
+
 }

@@ -2,27 +2,30 @@ package telran.util;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
 public class ArrayList<T> implements List<T> {
 	static final int DEFAULT_CAPACITY = 16;
 	private T[] array;
 	private int size;
-	private class ArrayListIterator implements Iterator<T>{
+
+	private class ArrayListIterator implements Iterator<T> {
+		int index = 0;
 
 		@Override
 		public boolean hasNext() {
-			// TODO Auto-generated method stub
-			return false;
+			return index < size;
 		}
 
 		@Override
 		public T next() {
-			// TODO Auto-generated method stub
-			return null;
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
+			return array[index++];
 		}
 
-		
 	}
 
 	public ArrayList(int capacity) {
@@ -66,20 +69,24 @@ public class ArrayList<T> implements List<T> {
 
 	@Override
 	public boolean removeIf(Predicate<T> predicate) {
-		//FIXME - write implementation of O[N]. Hint working with only indexes
 		int oldSize = size;
+		int e = 0;
+		int count = 0;
 		for (int i = 0; i < size; i++) {
-			if (predicate.test(array[i])) {
-				removeElement(i);
-				i--;
+			if (!predicate.test(array[i])) {
+				array[e++] = array[i];
+				if(i>0) array[i] = null;
+			} else {
+				count++;
+				array[i] = null;
 			}
 		}
+		size -= count;
 		return oldSize > size;
 	}
 
 	@Override
 	public boolean isEmpty() {
-	
 		return size == 0;
 	}
 
@@ -118,6 +125,7 @@ public class ArrayList<T> implements List<T> {
 
 	@Override
 	public void add(int index, T element) {
+		checkIndex(index, true);
 		if (size == array.length) {
 			reallocate();
 		}
@@ -128,6 +136,7 @@ public class ArrayList<T> implements List<T> {
 
 	@Override
 	public T remove(int index) {
+		checkIndex(index, false);
 		T old = array[index];
 		removeElement(index);
 		array[size] = null;
@@ -160,18 +169,21 @@ public class ArrayList<T> implements List<T> {
 
 	@Override
 	public T get(int index) {
-		return isInSize(index) ? array[index] : (T) new IndexOutOfBoundsException();
+		checkIndex(index, false);
+		return array[index];
 	}
 
 	@Override
 	public void set(int index, T element) {
-		if (isInSize(index)) {
-			array[index] = element;
-		}
+		checkIndex(index, false);
+		array[index] = element;
 	}
 
-	private boolean isInSize(int index) {
-		return index <= size && index >= 0;
+	private void checkIndex(int index, boolean sizeIncluded) {
+		int sizeDelta = sizeIncluded ? 0 : 1;
+		if (index < 0 || index > size - sizeDelta) {
+			throw new IndexOutOfBoundsException(index);
+		}
 	}
 
 	@Override

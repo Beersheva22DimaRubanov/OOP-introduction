@@ -44,10 +44,10 @@ public class ListTest extends CollectionTest {
 		Integer [] expected1 = {10, 100, -5, 280, 120, 15};
 		Integer [] expected2 = { 100, -5,  280, 120, 15};
 		Integer [] expected3 = { 100, -5,  280, 120};
-//		try {
-//			list.remove(1000);
-//			fail("should be exception");
-//		} catch(IndexOutOfBoundsException e) {}
+		try {
+			list.remove(1000);
+			fail("should be exception");
+		} catch(IndexOutOfBoundsException e) {}
 		assertEquals(134,list.remove(3));
 		assertArrayEquals(expected1, list.toArray(empty));
 		assertEquals(10, list.remove(0));
@@ -74,7 +74,7 @@ public class ListTest extends CollectionTest {
 	void testGet() {
 		try {
 			list.get(1000);
-//			fail("should be exception");
+			fail("should be exception");
 		} catch(IndexOutOfBoundsException e) {}
 		assertEquals(10, list.get(0));
 	}
@@ -84,11 +84,23 @@ public class ListTest extends CollectionTest {
 		list.set(0, 1000);
 		assertEquals(1000, list.get(0));
 	}
-	
+
 	@Test
-	@Override
 	void testIterator() {
-//TODO
+		ArrayList<Integer> list = new ArrayList<>();
+		list.add(10);
+		list.add(100);
+		list.add(-5);
+		list.add(134);
+		list.add(280);
+		list.add(120);
+		list.add(15);
+		
+		int i = 0;
+		for(Integer num: list) {
+			assertEquals(numbers[i], num);
+			i++;
+		}
 	}
 
 }
