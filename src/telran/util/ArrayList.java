@@ -71,17 +71,14 @@ public class ArrayList<T> implements List<T> {
 	public boolean removeIf(Predicate<T> predicate) {
 		int oldSize = size;
 		int e = 0;
-		int count = 0;
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < oldSize; i++) {
 			if (!predicate.test(array[i])) {
 				array[e++] = array[i];
-				if(i>0) array[i] = null;
 			} else {
-				count++;
-				array[i] = null;
+				size--;
 			}
 		}
-		size -= count;
+		Arrays.fill(array, size, oldSize, null);
 		return oldSize > size;
 	}
 
@@ -95,18 +92,6 @@ public class ArrayList<T> implements List<T> {
 		return size;
 	}
 
-	@Override
-	public boolean contains(T pattern) {
-		boolean res = false;
-		int index = 0;
-		while (index < size && !res) {
-			if (array[index].equals(pattern)) {
-				res = true;
-			}
-			index++;
-		}
-		return res;
-	}
 
 	@Override
 	public T[] toArray(T[] ar) {
@@ -142,11 +127,11 @@ public class ArrayList<T> implements List<T> {
 		array[size] = null;
 		return old;
 	}
-
+	
 	@Override
 	public int indexOf(T pattern) {
 		int index = 0;
-		while (index < size && !isEquals(array[index], pattern)) {
+		while(index < size && !isEquals(array[index], pattern)) {
 			index++;
 		}
 		return index < size ? index : -1;
@@ -177,13 +162,6 @@ public class ArrayList<T> implements List<T> {
 	public void set(int index, T element) {
 		checkIndex(index, false);
 		array[index] = element;
-	}
-
-	private void checkIndex(int index, boolean sizeIncluded) {
-		int sizeDelta = sizeIncluded ? 0 : 1;
-		if (index < 0 || index > size - sizeDelta) {
-			throw new IndexOutOfBoundsException(index);
-		}
 	}
 
 	@Override

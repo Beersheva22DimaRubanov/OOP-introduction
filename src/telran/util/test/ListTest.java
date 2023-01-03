@@ -2,6 +2,9 @@ package telran.util.test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,10 +30,8 @@ public class ListTest extends CollectionTest {
 		Integer [] expected1 = {10, 100, -5, 100, 134, 280, 120, 15};
 		Integer [] expected2 = {8, 10, 100, -5, 100, 134, 280, 120, 15};
 		Integer [] expected3 = {8, 10, 100, -5, 100, 134, 280, 120, 15, 200};
-		try {
-			list.add(1000, 1000);
-			fail("should be exception");
-		} catch(IndexOutOfBoundsException e) {}
+		assertThrowsExactly(IndexOutOfBoundsException.class, () -> list.add(1000, 100));
+		assertThrowsExactly(IndexOutOfBoundsException.class, () -> list.add(-1, 100));
 		list.add(3, 100);
 		assertArrayEquals(expected1, list.toArray(empty));
 		list.add(0, 8);
@@ -44,10 +45,8 @@ public class ListTest extends CollectionTest {
 		Integer [] expected1 = {10, 100, -5, 280, 120, 15};
 		Integer [] expected2 = { 100, -5,  280, 120, 15};
 		Integer [] expected3 = { 100, -5,  280, 120};
-		try {
-			list.remove(1000);
-			fail("should be exception");
-		} catch(IndexOutOfBoundsException e) {}
+		assertThrowsExactly(IndexOutOfBoundsException.class, () -> list.remove(1000));
+		assertThrowsExactly(IndexOutOfBoundsException.class, () -> list.remove(-1));
 		assertEquals(134,list.remove(3));
 		assertArrayEquals(expected1, list.toArray(empty));
 		assertEquals(10, list.remove(0));
@@ -87,20 +86,14 @@ public class ListTest extends CollectionTest {
 
 	@Test
 	void testIterator() {
-		ArrayList<Integer> list = new ArrayList<>();
-		list.add(10);
-		list.add(100);
-		list.add(-5);
-		list.add(134);
-		list.add(280);
-		list.add(120);
-		list.add(15);
-		
-		int i = 0;
-		for(Integer num: list) {
-			assertEquals(numbers[i], num);
-			i++;
+		Integer actual[] = new Integer[numbers.length];
+		int index = 0;
+		Iterator<Integer> it = list.iterator();
+		while(it.hasNext()) {
+			actual[index++] = it.next();
 		}
+		assertArrayEquals(numbers, actual);
+		assertThrowsExactly(NoSuchElementException.class, () -> it.next());
 	}
 
 }
