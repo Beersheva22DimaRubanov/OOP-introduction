@@ -20,13 +20,11 @@ public class LinkedList<T> implements List<T> {
 	private int size;
 	
 	private class LinkedListIterator implements Iterator{
-		int index = 0;
 		Node<T> current = head;
 		
 		@Override
 		public boolean hasNext() {
 			return current != null;
-//			return index < size;
 		}
 
 		@Override
@@ -36,11 +34,8 @@ public class LinkedList<T> implements List<T> {
 				throw new NoSuchElementException();
 			} 
 				current = current.next;
-				index++;
-			
 			return res;
 		}
-		
 	}
 	
 	@Override
