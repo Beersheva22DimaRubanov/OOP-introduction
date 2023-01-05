@@ -29,10 +29,10 @@ public class LinkedList<T> implements List<T> {
 
 		@Override
 		public Object next() {
-			T res = current == null ? null : current.obj;
 			if (!hasNext()) {
 				throw new NoSuchElementException();
 			}
+			T res = current.obj;
 			current = current.next;
 			return res;
 		}
@@ -40,6 +40,7 @@ public class LinkedList<T> implements List<T> {
 
 	@Override
 	public boolean add(T element) {
+		java.util.LinkedList t = new java.util.LinkedList();
 		Node<T> node = new Node<T>(element);
 		if (head == null) {
 			head = tail = node;
