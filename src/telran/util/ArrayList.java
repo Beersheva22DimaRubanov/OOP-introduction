@@ -32,8 +32,7 @@ public class ArrayList<T> extends AbstractCollection<T> implements List<T> {
 			if(!flag) {
 				throw new IllegalStateException();
 			}
-			removeElement(index-1);
-			array[size] = null;
+			ArrayList.this.remove(index-1);
 			flag = false;
 		}
 
@@ -80,22 +79,6 @@ public class ArrayList<T> extends AbstractCollection<T> implements List<T> {
 		}
 		Arrays.fill(array, size, oldSize, null);
 		return oldSize > size;
-	}
-
-
-	@Override
-	public T[] toArray(T[] ar) {
-		if (ar.length < size) {
-			ar = Arrays.copyOf(ar, size);
-		}
-		System.arraycopy(array, 0, ar, 0, size);
-
-		if (ar.length > size) {
-			for (int i = size; i < ar.length; i++) {
-				ar[i] = null;
-			}
-		}
-		return ar;
 	}
 
 	@Override

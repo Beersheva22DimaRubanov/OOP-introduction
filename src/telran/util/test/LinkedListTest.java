@@ -19,13 +19,7 @@ public class LinkedListTest extends ListTest {
 	
 	@Test
 	void isLoopTest() {
-		LinkedList<Integer> list = new LinkedList<>();
-		list.add(12);
-		list.add(15);
-		list.add(17);
-		list.add(18);
-		list.add(19);
-		list.add(20);
+		LinkedList<Integer> list = (LinkedList<Integer>) collection;
 		assertFalse(list.hasLoop());
 		list.setNext(5, 0);
 		assertTrue(list.hasLoop());

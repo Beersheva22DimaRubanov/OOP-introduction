@@ -86,22 +86,6 @@ public class LinkedList<T> extends AbstractCollection<T> implements List<T> {
 		}
 	}
 
-	
-
-	@Override
-	public T[] toArray(T[] array) {
-		if (array.length < size) {
-			array = Arrays.copyOf(array, size);
-		}
-		Node<T> current = head;
-		for (int i = 0; i < size; i++) {
-			array[i] = current.obj;
-			current = current.next;
-		}
-		Arrays.fill(array, size, array.length, null);
-		return array;
-	}
-
 	@Override
 	public Iterator<T> iterator() {
 		return new LinkedListIterator();
@@ -142,15 +126,14 @@ public class LinkedList<T> extends AbstractCollection<T> implements List<T> {
 	}
 	public boolean hasLoop() {
 		Node<T> current = head;
+		Node<T> helper = head;
 		boolean res = false;
-		if(tail.next != null) {
-			res = true;
-		} 
-		while(current != tail && !res) {
-			if(indexOf(current.obj) >= indexOf(current.next.obj)) {
+		while(helper != null && helper.next != null && !res) {
+			current = current.next;
+			helper = helper.next.next;
+			if(current == helper) {
 				res = true;
 			}
-			current = current.next;
 		}
 		return res;
 	}
