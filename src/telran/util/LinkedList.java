@@ -127,7 +127,7 @@ public class LinkedList<T> extends AbstractCollection<T> implements List<T> {
 	public boolean hasLoop() {
 		Node<T> current = head;
 		Node<T> helper = head;
-		boolean res = false;
+		boolean res = current == helper && current != head;
 		while(helper != null && helper.next != null && !res) {
 			current = current.next;
 			helper = helper.next.next;
