@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import telran.util.List;
 import telran.util.Set;
 
-public class SetTest extends CollectionTest {
+public abstract class SetTest extends CollectionTest {
 	Set <Integer> set;
 	@BeforeEach
 	void setUp() throws Exception{
@@ -20,13 +20,8 @@ public class SetTest extends CollectionTest {
 	@Test
 	void testAdd() {
 		assertTrue(set.add(Integer.MAX_VALUE));
+		assertFalse(set.add(10));
 		assertFalse(set.add(Integer.MAX_VALUE));
-	}
-
-	@Override
-	void testIterator() {
-		// TODO Auto-generated method stub
-
 	}
 
 }

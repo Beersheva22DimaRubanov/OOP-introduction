@@ -1,9 +1,10 @@
 package telran.util;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class Range implements Iterable<Integer> {
+public class Range implements Iterable<Integer>, Comparable<Range> {
 	private static final String EXCEPTION_MESSAGE = "max value must be greater than min value";
 	int min;
 	int max;
@@ -63,6 +64,13 @@ public class Range implements Iterable<Integer> {
 
 	public boolean checkNumber(int number) {
 		return number >= min && number < max;
+	} 
+
+	@Override
+	public int compareTo(Range o) {
+		int thisLength = max - min;
+		int oLength = o.max - o.min;
+		return Integer.compare(thisLength, oLength);
 	}
 
 }

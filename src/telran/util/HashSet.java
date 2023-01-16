@@ -12,42 +12,54 @@ public class HashSet<T> extends AbstractCollection<T> implements Set<T> {
 
 	private class HashSetIterator implements Iterator<T> {
 		int index = 0;
-		Iterator it = null;
+		Iterator currentIterator;
 		boolean flag = false;
-		private Iterator it2;
+		private Iterator prevIterator;
+		
+		HashSetIterator(){
+			getCurrentIterator();
+		}
+
+		private void getCurrentIterator() {
+			if(currentIterator == null || !currentIterator.hasNext()) {
+				Iterator<T> it = null;
+				while(it == null || !it.hasNext()) {
+					List<T> list = getList();
+					index++;
+					if(list == null) {
+						currentIterator = null;
+						return;
+					}
+					it = list.iterator();
+				}
+				currentIterator = it;
+			}
+		}
+
+		private List<T> getList() {
+			while(index < hashTable.length &&
+					hashTable[index] == null) {
+				index++;
+			}
+			return index < hashTable.length ? 
+					hashTable[index] : null;
+		}
 
 		@Override
 		public boolean hasNext() {
-			return  index< hashTable.length;
+			return  currentIterator != null;
 		}
 		
-		private Iterator getIterator(){
-			while(hashTable[index] == null && index < hashTable.length) {
-				index++;
-			}
-			return hashTable[index].iterator();
-		}
-		
-
 		@Override
 		public T next() {
-			boolean isCreated = false;
 			if (!hasNext()) {
 				throw new NoSuchElementException();
 			}
+			T res = (T) currentIterator.next();
+			prevIterator = currentIterator;
+			getCurrentIterator();
 			flag = true;
-			if(hashTable[index] == null){
-				it = getIterator();
-			} else if(it == null) {
-				it = hashTable[index].iterator();
-			}
-			T obj = (T)it.next();
-			it2 = it;
-			if(!it.hasNext()) {
-				index++;
-				it = null;
-			}
-			return obj;
+			return res;
 		}
 
 		@Override
@@ -55,10 +67,7 @@ public class HashSet<T> extends AbstractCollection<T> implements Set<T> {
 			if (!flag) {
 				throw new IllegalStateException();
 			}
-			it2.remove();
-			if(hashTable[index-1] != null && hashTable[index-1].isEmpty()) {
-				hashTable[index-1] = null;
-			}
+			prevIterator.remove();
 			size--;
 			flag = false;
 		}
