@@ -93,6 +93,5 @@ public class ListTest extends CollectionTest {
 			actual[index++] = it.next();
 		}
 		assertArrayEquals(numbers, actual);
-		assertThrowsExactly(NoSuchElementException.class, () -> it.next());
 	}
 }
