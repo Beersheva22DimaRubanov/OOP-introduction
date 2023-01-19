@@ -18,18 +18,13 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 
 	private class TreeSetIterator implements Iterator<T> {
 		Node<T> current = root;
+		Node<T> removed;
+		boolean flNext = false;
 
 		TreeSetIterator() {
 			if (current != null) {
 				current = getLeastNode(current);
 			}
-		}
-
-		private Node<T> getLeastNode(Node<T> current) {
-			while (current.left != null) {
-				current = current.left;
-			}
-			return current;
 		}
 
 		@Override
@@ -43,21 +38,21 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 				throw new NoSuchElementException();
 			}
 			T res = current.obj;
+			removed = current;
 			current = getNextCurrent(current);
+			flNext = true;
 			return res;
 		}
 
-		private Node<T> getNextCurrent(Node<T> current) {
-			return current.right == null ? getGreaterParent(current) : getLeastNode(current.right);
+		@Override
+		public void remove() {
+			if (!flNext) {
+				throw new IllegalStateException();
+			}
+			Node<T> removedNode = current == null ? getMaxNode() : removed;
+			removeNode(removedNode);
+			flNext = false;
 		}
-
-		private Node<T> getGreaterParent(Node<T> current) {
-		while(current.parent != null && current.parent.left != current) {
-			current = current.parent;
-		}
-			return current.parent;
-		}
-
 	}
 
 	private Node<T> root;
@@ -69,6 +64,24 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 
 	public TreeSet() {
 		this((Comparator<T>) Comparator.naturalOrder());
+	}
+
+	private Node<T> getLeastNode(Node<T> current) {
+		while (current.left != null) {
+			current = current.left;
+		}
+		return current;
+	}
+
+	private Node<T> getNextCurrent(Node<T> current) {
+		return current.right == null ? getGreaterParent(current) : getLeastNode(current.right);
+	}
+
+	private Node<T> getGreaterParent(Node<T> current) {
+		while (current.parent != null && current.parent.left != current) {
+			current = current.parent;
+		}
+		return current.parent;
 	}
 
 	@Override
@@ -105,11 +118,90 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 		return current == null ? parent : current;
 	}
 
-
 	@Override
 	public boolean remove(T pattern) {
-		// NOT IMPLEMENTED
-		return false;
+		boolean res = false;
+		Node<T> current = getNode(pattern);
+
+		if (current.obj.equals(pattern)) {
+			res = removeNode(current);
+
+		}
+
+		return res;
+	}
+
+	private boolean removeNode(Node<T> current) {
+		Node<T> child = current;
+		size--;
+		if (current.left == null && current.right == null) {
+			if (current.parent == null) {
+				root = null;
+			} else {
+				if (current.parent.left == current) {
+					current.parent.left = null;
+				} else {
+					current.parent.right = null;
+				}
+				current.parent = null;
+			}
+		} else {
+			child = current.left != null ? getLeastNode(current) : getLeastNode(current.right);
+		}
+		if (current == root) {
+			root = child;
+		}
+		if (child.right != null) {
+			child.parent.left = child.right;
+		}
+		if (child.parent != current && child.parent != null) {
+			removeParent(child);
+		}
+		setParent(current, current.parent, child);
+		if (current.left != child && current.left != null) {
+			child.left = current.left;
+			child.left.parent = child;
+		}
+		current.left = null;
+		if (current.right != child && current.right != null) {
+			child.right = current.right;
+			child.right.parent = child;
+		}
+		current.right = null;
+
+		return true;
+	}
+
+	private void removeParent(Node<T> child) {
+		if (child.parent.right == child) {
+			child.parent.right = null;
+		} else {
+			child.parent.left = null;
+		}
+	}
+
+	private void setParent(Node<T> current, Node<T> parent, Node<T> child) {
+		if (parent != null) {
+			if (parent.right == current) {
+				parent.right = child;
+				if (child != null) {
+					child.parent = parent;
+				}
+			} else {
+				parent.left = child;
+				if (child != null) {
+					child.parent = parent;
+				}
+			}
+
+		} else {
+			child.parent = null;
+		}
+		current.parent = null;
+	}
+
+	private Node<T> removeNodeWithChild(Node<T> current) {
+		return current.right != null ? getLeastNode(current.right) : getLeastNode(current);
 	}
 
 	@Override
@@ -126,26 +218,51 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 
 	@Override
 	public T floor(T element) {
-		// TODO Auto-generated method stub
-		return null;
+		T res = null;
+		Node<T> current = getNode(element);
+//		if (comparator.compare(element, getLeastNode(root).obj) < 0) {
+//			res = null;
+//		} else if (comparator.compare(element, current.obj) < 0) {
+//			while (current.parent != null 
+//					&& comparator.compare(element, current.obj) < 0) {
+//				current = current.parent;
+//			}
+//			res = current.obj;
+//		} else {
+//			while (current.right != null && comparator.compare(current.right.obj, element) < 0) {
+//				current = current.right;
+//			}
+//			res = current.obj;
+//		}
+		while(current != null && comparator.compare(element, current.obj) < 0 ){
+			current = getNextCurrent(current);
+		}
+		return current  == null ? null: current.obj;
 	}
 
 	@Override
 	public T ceiling(T element) {
-		// TODO Auto-generated method stub
+		T res = null;
+		Node<T> current = getNode(element);
 		return null;
 	}
 
 	@Override
 	public T first() {
-		// TODO Auto-generated method stub
-		return null;
+		return getLeastNode(root).obj;
 	}
 
 	@Override
 	public T last() {
-		// TODO Auto-generated method stub
-		return null;
+		return getMaxNode().obj;
+	}
+
+	private Node<T> getMaxNode() {
+		Node<T> current = root;
+		while (current.right != null) {
+			current = current.right;
+		}
+		return current;
 	}
 
 }

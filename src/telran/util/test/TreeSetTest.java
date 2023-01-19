@@ -2,14 +2,10 @@ package telran.util.test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Arrays;
 import java.util.Random;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
-import telran.util.HashSet;
-import telran.util.LinkedList;
 import telran.util.TreeSet;
 
 public class TreeSetTest extends SortedTest {

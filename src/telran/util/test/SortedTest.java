@@ -34,7 +34,6 @@ public class SortedTest extends SetTest{
 		assertArrayEquals(expected, actual);
 	}
 	
-	
 //	-5, 10, 15 100, 120, 134, 280, 
 	@Test
 	void floorTest() {
