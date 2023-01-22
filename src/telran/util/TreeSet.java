@@ -122,53 +122,51 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 	public boolean remove(T pattern) {
 		boolean res = false;
 		Node<T> current = getNode(pattern);
-
 		if (current.obj.equals(pattern)) {
 			res = removeNode(current);
-
 		}
-
 		return res;
 	}
 
 	private boolean removeNode(Node<T> current) {
-		Node<T> child = current;
-		size--;
-		if (current.left == null && current.right == null) {
-			if (current.parent == null) {
+		if(current.left == null && current.right == null) {
+			if(current.parent == null) {
 				root = null;
-			} else {
-				if (current.parent.left == current) {
-					current.parent.left = null;
-				} else {
-					current.parent.right = null;
-				}
-				current.parent = null;
+			}else  {
+				removeParent(current);
 			}
+			current.parent = null;
 		} else {
-			child = current.left != null ? getLeastNode(current) : getLeastNode(current.right);
+			if(current.left != null) {
+				Node<T> replace = current.left;
+				current.obj = replace.obj;
+				current.left = null;
+				if(replace.right != null) {
+					replace.right.parent = current;
+					current = replace.right;
+					replace.right = null;
+				}
+				replace.parent = null;
+			} else {
+				Node<T> replace = getLeastNode(current.right);
+				if(replace.right != null) {
+					replace.right.parent = replace.parent;
+					replace.parent.left = replace.right;
+				} else {
+					replace.parent.left = null;
+				}
+				if(current.right != replace) {
+					replace.right = current.right;
+					current.right.parent = replace;
+					current.right = null;
+				} else {
+					current.obj = replace.obj;
+					current.right = null;
+					replace.parent = null;
+				}
+			}
 		}
-		if (current == root) {
-			root = child;
-		}
-		if (child.right != null) {
-			child.parent.left = child.right;
-		}
-		if (child.parent != current && child.parent != null) {
-			removeParent(child);
-		}
-		setParent(current, current.parent, child);
-		if (current.left != child && current.left != null) {
-			child.left = current.left;
-			child.left.parent = child;
-		}
-		current.left = null;
-		if (current.right != child && current.right != null) {
-			child.right = current.right;
-			child.right.parent = child;
-		}
-		current.right = null;
-
+		size--;
 		return true;
 	}
 
@@ -178,30 +176,6 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 		} else {
 			child.parent.left = null;
 		}
-	}
-
-	private void setParent(Node<T> current, Node<T> parent, Node<T> child) {
-		if (parent != null) {
-			if (parent.right == current) {
-				parent.right = child;
-				if (child != null) {
-					child.parent = parent;
-				}
-			} else {
-				parent.left = child;
-				if (child != null) {
-					child.parent = parent;
-				}
-			}
-
-		} else {
-			child.parent = null;
-		}
-		current.parent = null;
-	}
-
-	private Node<T> removeNodeWithChild(Node<T> current) {
-		return current.right != null ? getLeastNode(current.right) : getLeastNode(current);
 	}
 
 	@Override
@@ -220,31 +194,29 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 	public T floor(T element) {
 		T res = null;
 		Node<T> current = getNode(element);
-//		if (comparator.compare(element, getLeastNode(root).obj) < 0) {
-//			res = null;
-//		} else if (comparator.compare(element, current.obj) < 0) {
-//			while (current.parent != null 
-//					&& comparator.compare(element, current.obj) < 0) {
-//				current = current.parent;
-//			}
-//			res = current.obj;
-//		} else {
-//			while (current.right != null && comparator.compare(current.right.obj, element) < 0) {
-//				current = current.right;
-//			}
-//			res = current.obj;
-//		}
-		while(current != null && comparator.compare(element, current.obj) < 0 ){
-			current = getNextCurrent(current);
+		if (comparator.compare(element, getLeastNode(root).obj) < 0) {
+			res = null;
+		} else if (comparator.compare(element, current.obj) < 0) {
+			while (current.parent != null && comparator.compare(element, current.obj) < 0) {
+				current = current.parent;
+			}
+			res = current.obj;
+		} else {
+			while (current.right != null && comparator.compare(current.right.obj, element) < 0) {
+				current = current.right;
+			}
+			res = current.obj;
 		}
-		return current  == null ? null: current.obj;
+		return res;
 	}
 
 	@Override
 	public T ceiling(T element) {
-		T res = null;
 		Node<T> current = getNode(element);
-		return null;
+		while(current != null && comparator.compare(element, current.obj) > 0) {
+			current = current.left;
+		}
+		return current == null ? null : current.obj;
 	}
 
 	@Override
