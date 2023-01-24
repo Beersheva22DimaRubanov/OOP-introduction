@@ -122,52 +122,85 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 	public boolean remove(T pattern) {
 		boolean res = false;
 		Node<T> current = getNode(pattern);
-		if (current.obj.equals(pattern)) {
-			res = removeNode(current);
+		if (current != null && comparator.compare(pattern, current.obj) == 0) {
+			res = true;
+			
+					removeNode(current);
 		}
 		return res;
 	}
 
-	private boolean removeNode(Node<T> current) {
-		if(current.left == null && current.right == null) {
-			if(current.parent == null) {
-				root = null;
-			}else  {
-				removeParent(current);
-			}
-			current.parent = null;
+	private void removeNode(Node<T> current) {
+		if(current.left != null && current.right != null){
+			removeNodeJunction(current);
 		} else {
-			if(current.left != null) {
-				Node<T> replace = current.left;
-				current.obj = replace.obj;
-				current.left = null;
-				if(replace.right != null) {
-					replace.right.parent = current;
-					current = replace.right;
-					replace.right = null;
-				}
-				replace.parent = null;
-			} else {
-				Node<T> replace = getLeastNode(current.right);
-				if(replace.right != null) {
-					replace.right.parent = replace.parent;
-					replace.parent.left = replace.right;
+			removeNodeNonJunction(current);
+		}
+		
+//		if(current.left == null && current.right == null) {
+//			if(current.parent == null) {
+//				root = null;
+//			}else  {
+//				removeParent(current);
+//			}
+//			current.parent = null;
+//		} else {
+//			if(current.left != null) {
+//				Node<T> replace = current.left;
+//				current.obj = replace.obj;
+//				current.left = null;
+//				if(replace.right != null) {
+//					replace.right.parent = current;
+//					current = replace.right;
+//					replace.right = null;
+//				}
+//				replace.parent = null;
+//			} else {
+//				Node<T> replace = getLeastNode(current.right);
+//				if(replace.right != null) {
+//					replace.right.parent = replace.parent;
+//					replace.parent.left = replace.right;
+//				} else {
+//					replace.parent.left = null;
+//				}
+//				if(current.right != replace) {
+//					replace.right = current.right;
+//					current.right.parent = replace;
+//					current.right = null;
+//				} else {
+//					current.obj = replace.obj;
+//					current.right = null;
+//					replace.parent = null;
+//				}
+//			}
+//		}
+		size--;
+//		return true;
+	}
+	
+	private boolean isJunction() {
+		return 
+	}
+
+	private void removeNodeJunction(Node<T> current) {
+			Node<T> parent = current.parent;
+			Node<T> child = current.left == null ? current.right : current.left;
+			if(parent == null) {
+				root = child;
+				
+			}else {
+				if(parent.left == current) {
+					parent.left = child;
 				} else {
-					replace.parent.left = null;
-				}
-				if(current.right != replace) {
-					replace.right = current.right;
-					current.right.parent = replace;
-					current.right = null;
-				} else {
-					current.obj = replace.obj;
-					current.right = null;
-					replace.parent = null;
+					parent.right = child;
 				}
 			}
-		}
-		size--;
-		return true;
+ 	}
+
+	private void removeNodeNonJunction(Node<T> current) {
+		Node<T> substitution = getLeastNode(current.right);
+		current.obj = substitution.obj;
+		removeNodeNonJunction(current);
 	}
 
 	private void removeParent(Node<T> child) {
@@ -228,6 +261,10 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 	public T last() {
 		return getMaxNode().obj;
 	}
+	
+//	private T floorCeiling(T pattern) {
+//		
+//	}
 
 	private Node<T> getMaxNode() {
 		Node<T> current = root;
