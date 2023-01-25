@@ -49,7 +49,7 @@ public class LinearRecurtionTest {
 	
 	@Test
 	void squareTest() {
-		assertEquals(16, square(4));
+		assertEquals(1, square(1));
 		assertEquals(10000, square(100));
 	}
 	
