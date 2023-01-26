@@ -18,7 +18,7 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 
 	private class TreeSetIterator implements Iterator<T> {
 		Node<T> current = root;
-		Node<T> removed;
+		Node<T> prev;
 		boolean flNext = false;
 
 		TreeSetIterator() {
@@ -38,7 +38,7 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 				throw new NoSuchElementException();
 			}
 			T res = current.obj;
-			removed = current;
+			prev = current;
 			current = getNextCurrent(current);
 			flNext = true;
 			return res;
@@ -49,11 +49,17 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 			if (!flNext) {
 				throw new IllegalStateException();
 			}
-			Node<T> removedNode = current == null ? getMaxNode() : removed;
-			removeNode(removedNode);
+			if (isJunction(prev)) {
+				current = prev;
+			}
+			removeNode(prev);
 			flNext = false;
 		}
 	}
+
+	private static final String SYMBOL = " ";
+
+	private static final int NUMBER_SYMBOLS_PER_LEVEL = 4;
 
 	private Node<T> root;
 	private Comparator<T> comparator;
@@ -124,83 +130,46 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 		Node<T> current = getNode(pattern);
 		if (current != null && comparator.compare(pattern, current.obj) == 0) {
 			res = true;
-			
-					removeNode(current);
+
+			removeNode(current);
 		}
 		return res;
 	}
 
 	private void removeNode(Node<T> current) {
-		if(current.left != null && current.right != null){
+		if (isJunction(current)) {
 			removeNodeJunction(current);
 		} else {
 			removeNodeNonJunction(current);
 		}
-		
-//		if(current.left == null && current.right == null) {
-//			if(current.parent == null) {
-//				root = null;
-//			}else  {
-//				removeParent(current);
-//			}
-//			current.parent = null;
-//		} else {
-//			if(current.left != null) {
-//				Node<T> replace = current.left;
-//				current.obj = replace.obj;
-//				current.left = null;
-//				if(replace.right != null) {
-//					replace.right.parent = current;
-//					current = replace.right;
-//					replace.right = null;
-//				}
-//				replace.parent = null;
-//			} else {
-//				Node<T> replace = getLeastNode(current.right);
-//				if(replace.right != null) {
-//					replace.right.parent = replace.parent;
-//					replace.parent.left = replace.right;
-//				} else {
-//					replace.parent.left = null;
-//				}
-//				if(current.right != replace) {
-//					replace.right = current.right;
-//					current.right.parent = replace;
-//					current.right = null;
-//				} else {
-//					current.obj = replace.obj;
-//					current.right = null;
-//					replace.parent = null;
-//				}
-//			}
-//		}
 		size--;
-//		return true;
 	}
-	
-	private boolean isJunction() {
-		return 
+
+	private boolean isJunction(Node<T> current) {
+		return current.left != null && current.right != null;
+	}
+
+	private void removeNodeNonJunction(Node<T> current) {
+		Node<T> parent = current.parent;
+		Node<T> child = current.left == null ? current.right : current.left;
+		if (parent == null) {
+			root = child;
+		} else {
+			if (parent.left == current) {
+				parent.left = child;
+			} else {
+				parent.right = child;
+			}
+		}
+		if (child != null) {
+			child.parent = parent;
+		}
 	}
 
 	private void removeNodeJunction(Node<T> current) {
-			Node<T> parent = current.parent;
-			Node<T> child = current.left == null ? current.right : current.left;
-			if(parent == null) {
-				root = child;
-				
-			}else {
-				if(parent.left == current) {
-					parent.left = child;
-				} else {
-					parent.right = child;
-				}
-			}
- 	}
-
-	private void removeNodeNonJunction(Node<T> current) {
 		Node<T> substitution = getLeastNode(current.right);
 		current.obj = substitution.obj;
-		removeNodeNonJunction(current);
+		removeNodeNonJunction(substitution);
 	}
 
 	private void removeParent(Node<T> child) {
@@ -225,53 +194,113 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 
 	@Override
 	public T floor(T element) {
+		return floorCeiling(element, true);
+	}
+
+	@Override
+	public T ceiling(T element) {
+		return floorCeiling(element, false);
+	}
+
+	@Override
+	public T first() {
 		T res = null;
-		Node<T> current = getNode(element);
-		if (comparator.compare(element, getLeastNode(root).obj) < 0) {
-			res = null;
-		} else if (comparator.compare(element, current.obj) < 0) {
-			while (current.parent != null && comparator.compare(element, current.obj) < 0) {
-				current = current.parent;
-			}
-			res = current.obj;
-		} else {
-			while (current.right != null && comparator.compare(current.right.obj, element) < 0) {
-				current = current.right;
-			}
-			res = current.obj;
+		if (root != null) {
+			res = getLeastNode(root).obj;
 		}
 		return res;
 	}
 
 	@Override
-	public T ceiling(T element) {
-		Node<T> current = getNode(element);
-		while(current != null && comparator.compare(element, current.obj) > 0) {
-			current = current.left;
-		}
-		return current == null ? null : current.obj;
-	}
-
-	@Override
-	public T first() {
-		return getLeastNode(root).obj;
-	}
-
-	@Override
 	public T last() {
-		return getMaxNode().obj;
+		T res = null;
+		if (root != null) {
+			res = getMaxNode(root).obj;
+		}
+		return res;
 	}
-	
-//	private T floorCeiling(T pattern) {
-//		
-//	}
 
-	private Node<T> getMaxNode() {
+	private T floorCeiling(T pattern, boolean isFloor) {
+		T res = null;
+		int compRes = 0;
 		Node<T> current = root;
+		while (current != null && (compRes = comparator.compare(pattern, current.obj)) != 0) {
+			if ((compRes < 0 && !isFloor) || (compRes > 0 && isFloor)) {
+				res = current.obj;
+			}
+			current = compRes < 0 ? current.left : current.right;
+		}
+		return current == null ? res : current.obj;
+	}
+
+	private Node<T> getMaxNode(Node<T> current) {
 		while (current.right != null) {
 			current = current.right;
 		}
 		return current;
+	}
+
+	public void displayTreeRotated() {
+		displayTreeRotated(root, 0);
+	}
+
+	private void displayTreeRotated(Node<T> root, int level) {
+		if (root != null) {
+			displayTreeRotated(root.right, level + 1);
+			displayRoot(root, level);
+			displayTreeRotated(root.left, level + 1);
+		}
+	}
+
+	private void displayRoot(Node<T> root, int level) {
+		System.out.printf("%s%s\n", SYMBOL.repeat(NUMBER_SYMBOLS_PER_LEVEL * level), root.obj);
+	}
+
+	public int height() {
+		return height(root);
+	}
+
+	private int height(Node<T> root) {
+		int res = 0;
+		if (root != null) {
+			int heightLeft = height(root.left);
+			int heightRight = height(root.right);
+			res = Math.max(heightLeft, heightRight) + 1;
+		}
+		return res;
+	}
+
+	public int width() {
+		return root == null ? null : width(root);
+	}
+
+	private int width(Node<T> root) {
+		int res = 1;
+			if(root.right != null || root.left != null) {
+				int widthLeft = width(root.left);
+				int widthRight = width(root.right);
+				res = widthLeft + widthRight;
+		}
+		return res;
+	}
+
+	public void inversion() {
+		comparator = comparator.reversed();
+		inversion(root);
+	}
+
+	private void inversion(Node<T> root) {
+		if(root != null) {
+			inversion(root.right);
+			inversion(root.left);
+			swap(root);
+		}
+	}
+
+	private void swap(Node<T> root) {
+		Node<T> tmp = root.left;
+		root.left = root.right;
+		root.right = tmp;
 	}
 
 }
