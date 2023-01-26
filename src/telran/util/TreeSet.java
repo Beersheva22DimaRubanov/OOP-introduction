@@ -271,15 +271,17 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 	}
 
 	public int width() {
-		return root == null ? null : width(root);
+		return width(root);
 	}
 
 	private int width(Node<T> root) {
-		int res = 1;
-			if(root.right != null || root.left != null) {
-				int widthLeft = width(root.left);
-				int widthRight = width(root.right);
-				res = widthLeft + widthRight;
+		int res = 0;
+		if (root != null) {
+			if (root.left == null && root.right == null) {
+				res = 1;
+			} else {
+				res = width(root.left) + width(root.right);
+			}
 		}
 		return res;
 	}
@@ -290,7 +292,7 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 	}
 
 	private void inversion(Node<T> root) {
-		if(root != null) {
+		if (root != null) {
 			inversion(root.right);
 			inversion(root.left);
 			swap(root);
@@ -301,6 +303,38 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 		Node<T> tmp = root.left;
 		root.left = root.right;
 		root.right = tmp;
+	}
+
+	public void balance() {
+		Node<T>[] array = getNodesArray();
+		root = balance(array, 0, array.length - 1, null);
+	}
+
+	private Node<T> balance(Node<T>[] array, int left, int right, Node<T> parent) {
+		Node<T> root = null;
+		if(left <= right) {
+			final int rootIndex = (left + right) / 2;
+			root = array[rootIndex];
+			root.parent = parent;
+			root.left = balance(array, left, rootIndex - 1, root);
+			root.right = balance(array, rootIndex + 1, right, root);
+		}
+		
+		return root;
+	}
+
+	private Node<T>[] getNodesArray() {
+		Node<T> res[] = new Node[size];
+		int index = 0;
+		if(root != null) {
+			Node<T> current = getLeastNode(root);
+			while (current != null) {
+				res[index++] = current;
+				current = getNextCurrent(current);
+			}
+		}
+		
+		return res;
 	}
 
 }
