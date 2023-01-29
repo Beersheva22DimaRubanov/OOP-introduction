@@ -3,7 +3,11 @@ package telran.test;
 import static org.junit.jupiter.api.Assertions.*;
 import static telran.util.LinearRecurtion.*;
 
+import java.util.NoSuchElementException;
+
 import org.junit.jupiter.api.Test;
+
+import telran.util.MdArray;
 
 public class LinearRecurtionTest {
 	@Test
@@ -46,17 +50,17 @@ public class LinearRecurtionTest {
 		reverse(ar);
 		assertArrayEquals(expected, ar);
 	}
-	
+
 	@Test
 	void squareTest() {
 		assertEquals(1, square(1));
 		assertEquals(10000, square(100));
 	}
-	
+
 	@Test
-	void substringTest(){
+	void substringTest() {
 		String str = "asdgkmkdas";
-		String substr= "kmk";
+		String substr = "kmk";
 		assertTrue(isSubstring(str, substr));
 		assertFalse(isSubstring(str, "hello"));
 	}
