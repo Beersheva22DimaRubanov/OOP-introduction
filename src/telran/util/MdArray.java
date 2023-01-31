@@ -32,7 +32,7 @@ public class MdArray<T> {
 	}
 
 	private MdArray<T> getCurrentArray(Integer[] dim) {
-		MdArray<T> current = null;
+		MdArray<T> current = this;
 		if (dim != null) {
 			current = array[dim[0]];
 			int index = 1;
@@ -58,29 +58,18 @@ public class MdArray<T> {
 	}
 
 	public void forEach(Consumer<T> cons) {
-		forEach(cons, array);
-	}
-
-	private void forEach(Consumer<T> cons, MdArray[] current) {
-		for (int i = 0; i < current.length; i++) {
-			if (current[i].value != null) {
-				cons.accept((T) current[i].value);
-			} else if (current[i].array != null) {
-				forEach(cons, current[i].array);
+		if(array == null) {
+			cons.accept(value);
+		} else {
+			for(MdArray<T> mdArray : array) {
+				mdArray.forEach(cons);
 			}
 		}
 	}
 
 	public T[] toArray(T[] ar) {
 		ArrayList<T> list = new ArrayList<>();
-		forEach(x -> list.add(x));
-		if (list.size() > ar.length) {
-			ar = Arrays.copyOf(ar, list.size());
-		}
-		int index = 0;
-		for (T obj : list) {
-			ar[index++] = obj;
-		}
-		return ar;
+		forEach(list::add);
+		return list.toArray(ar);
 	}
 }
