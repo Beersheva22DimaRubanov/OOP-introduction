@@ -1,8 +1,13 @@
 package telran.util;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public interface Collection<T> extends Iterable<T> {
 	boolean add(T element);
@@ -48,5 +53,19 @@ public interface Collection<T> extends Iterable<T> {
 		}
 		Arrays.fill(array, size, array.length, null);
 		return array;
+	}
+
+	default Stream<T> stream() {
+		return StreamSupport.stream(this.spliterator(), false);
+	}
+
+	default Stream<T> parallelStream() {
+		return StreamSupport.stream(this.spliterator(), true);
+	}
+
+	default T[] toArrayShuffling(T[] array) {
+		T [] arr = this.stream().toList().toArray(x -> array);
+		Collections.shuffle(Arrays.asList(arr));
+		return arr;
 	}
 }
