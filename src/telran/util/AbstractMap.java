@@ -51,13 +51,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
 
 	@Override
 	public boolean containsValue(V value) {
-		boolean res = false;
-		for(Entry<K, V> entry : set) {
-			if(entry.getValue() == value) {
-				res = true;
-			}
-		}
-		return res;
+		return set.stream().anyMatch(x -> x.getValue().equals(value));
 	}
 
 	@Override
