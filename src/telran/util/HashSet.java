@@ -159,5 +159,20 @@ public class HashSet<T> extends AbstractCollection<T> implements Set<T> {
 	public Iterator<T> iterator() {
 		return new HashSetIterator();
 	}
+	
+	@Override
+	public T get(T pattern) {
+		T res = null;
+		List<T> list = hashTable[getHashIndex(pattern)];
+		if (list != null) {
+			T obj = null;
+			Iterator<T> it = list.iterator();
+			while(it.hasNext() && !isEquals((obj = it.next()),pattern)) {}
+			if (isEquals(obj, pattern)) {
+				res = obj;
+			}
+		}
+		return res;
+	}
 
 }

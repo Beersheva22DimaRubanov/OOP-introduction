@@ -336,5 +336,11 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 		
 		return res;
 	}
+	
+	@Override
+	public T get(T pattern) {
+		T res = ceiling(pattern);
+		return res!= null && res.equals(pattern)? res: null;
+	}
 
 }
