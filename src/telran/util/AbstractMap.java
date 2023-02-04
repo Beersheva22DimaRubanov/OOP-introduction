@@ -46,7 +46,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
 
 	@Override
 	public boolean containsKey(K key) {
-		return get(key) == null ? false : true;
+		return get(key) != null;
 	}
 
 	@Override
