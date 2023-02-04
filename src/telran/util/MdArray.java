@@ -37,9 +37,6 @@ public class MdArray<T> {
 			current = array[dim[0]];
 			int index = 1;
 			while (index < dim.length && current.array != null) {
-				if (current.array.length < dim[index] - 1) {
-					throw new IndexOutOfBoundsException();
-				}
 				current = current.array[dim[index]];
 				index++;
 			}
