@@ -64,8 +64,6 @@ public interface Collection<T> extends Iterable<T> {
 	}
 
 	default T[] toArrayShuffling(T[] array) {
-//		T [] arr = this.stream().toList().toArray(x -> array);
-//		Collections.shuffle(Arrays.asList(arr));
 		T[] arr = toArray(array);
 		T[] res = Arrays.copyOf(arr, arr.length);
 		int[] index = {0};

@@ -16,19 +16,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
 		return res;
 	}
 
-	@Override
-	public V putIfAbsent(K key, V value) {
-		V res = null;
-		Entry<K, V> entry = set.get(new Entry<>(key, null));
-		if (entry != null) {
-			res = entry.getValue();
-		} else {
-			set.add(new Entry<>(key, value));
-		}
-		return res;
-	}
-
-	@Override
+		@Override
 	public V get(K key) {
 		V res = null;
 		Entry<K, V> entry = set.get(new Entry<>(key, null));
@@ -36,12 +24,6 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
 			res = entry.getValue();
 		}
 		return res;
-	}
-
-	@Override
-	public V getOrDefault(K key, V value) {
-		V res = get(key);
-		return res == null ? value : res;
 	}
 
 	@Override
@@ -78,7 +60,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
 		try {
 			@SuppressWarnings("unchecked")
 			Set<Entry<K, V>> res = set.getClass().getConstructor().newInstance();
-			set.stream().forEach(x -> res.add(x));
+			set.stream().forEach(res::add);
 			return res;
 		} catch (Exception e) {
 			throw new IllegalStateException();
@@ -87,11 +69,9 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
 
 	@Override
 	public V remove(K key) {
-		V res = null;
-		Entry<K, V> entry = set.get(new Entry<>(key, null));
-		if (entry != null) {
-			res = entry.getValue();
-			set.remove(entry);
+		V res = get(key);
+		if (res != null) {
+			set.remove(new Entry<>(key, null));
 		}
 		return res;
 	}
