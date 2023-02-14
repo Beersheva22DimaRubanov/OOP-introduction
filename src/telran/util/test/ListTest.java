@@ -84,14 +84,5 @@ public class ListTest extends CollectionTest {
 		assertEquals(1000, list.get(0));
 	}
 
-	@Test
-	void testIterator() {
-		Integer actual[] = new Integer[numbers.length];
-		int index = 0;
-		Iterator<Integer> it = list.iterator();
-		while(it.hasNext()) {
-			actual[index++] = it.next();
-		}
-		assertArrayEquals(numbers, actual);
-	}
+	
 }
